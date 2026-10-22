@@ -3,17 +3,6 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.anddone.club"
-        }
-      ],
-      "destination": "https://anddone.club/:path*",
-      "permanent": true
-    },
-    {
       "source": "/get",
       "destination": "https://testflight.apple.com/join/pJcWyPD7",
       "permanent": false

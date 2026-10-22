@@ -50,6 +50,9 @@ Delete GoDaddy's own `A` records for `@` (the parking IPs `13.248.243.5` and
 `npx vercel@65.1.0 domains verify anddone.club` reports when it's live, and
 Vercel issues the certificate on its own.
 
+`www.anddone.club` redirects (308) to `anddone.club`. That is set on the www
+domain in the Vercel project (Settings › Domains), not in `vercel.json`.
+
 ## The landing page
 
 - `assets/runners.jpg` (2000 px) and `runners-1200.jpg`: the black-and-white
