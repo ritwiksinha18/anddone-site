@@ -5,7 +5,8 @@ into shareable cards. Plain static HTML and CSS, no build step.
 
 | Path | Page |
 |---|---|
-| `/` | Holding page (the marketing landing page replaces it later) |
+| `/` | Landing page: one screen, wordmark, headline, QR to the app |
+| `/get` | Redirect (in `vercel.json`) to the TestFlight public link; point it at the App Store listing at launch, and every printed QR follows |
 | `/privacy/` | Privacy policy — App Store Connect › App Privacy › Privacy Policy URL |
 | `/support/` | Support and FAQ — App Store Connect › Support URL |
 
@@ -20,18 +21,36 @@ python3 -m http.server 4173
 
 then open http://localhost:4173.
 
-## Hosting: GitHub Pages on anddone.club
+## Hosting: Vercel, deployed from this folder
 
-1. Push this repository to GitHub.
-2. Repository › Settings › Pages: deploy from the `main` branch, root folder.
-   The `CNAME` file already names `anddone.club`.
-3. At the domain registrar, set DNS:
-   - `A` records for `anddone.club`: `185.199.108.153`, `185.199.109.153`,
-     `185.199.110.153`, `185.199.111.153`
-   - `AAAA` records: `2606:50c0:8000::153`, `2606:50c0:8001::153`,
-     `2606:50c0:8002::153`, `2606:50c0:8003::153`
-   - `CNAME` for `www`: `<github-username>.github.io`
-4. Back in Settings › Pages, tick **Enforce HTTPS** once the certificate is issued.
+The site is a Vercel project (`anddone-site`, personal account) deployed with
+the Vercel CLI straight from this folder. There is no GitHub repository and no
+Git integration: nothing deploys unless someone runs the command.
+
+```sh
+npx vercel@65.1.0 deploy --prod
+```
+
+`vercel.json` holds the `/get` redirect, trailing-slash URLs and asset caching.
+`.vercel/` (the project link) is git-ignored.
+
+### Domain
+
+`anddone.club` and `www.anddone.club` are added to the project. At the
+registrar, set:
+
+- `A` record for `anddone.club` → `76.76.21.21`
+- `CNAME` for `www` → `cname.vercel-dns.com`
+
+Vercel issues the certificate once DNS resolves.
+
+## The landing background
+
+`assets/hero-wide.jpg` (2880×1800) and `assets/hero-tall.jpg` (1290×2796) are
+composed from real exports of the app's own templates (Neon Pulse, Border
+Beam, Border Fire, and the Race Bib and Medal stickers) rendered from the app's
+fixture workouts, so no photo licences are involved. `assets/og.jpg` is a crop
+of the wide one. `assets/qr.svg` encodes `https://anddone.club/get`.
 
 ## App Store Connect URLs
 

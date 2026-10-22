@@ -161,20 +161,6 @@ li { margin: 6px 0; }
 }
 .button:hover { color: var(--on-accent); filter: brightness(1.05); }
 
-/* Holding page */
-.hold {
-  min-height: calc(100vh - 160px);
-  max-width: var(--measure);
-  margin: 0 auto;
-  padding: 72px 20px 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 22px;
-}
-.hold .icon { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-.hold h1 { font-size: clamp(36px, 8vw, 60px); margin: 0; }
-.hold p { font-size: 19px; margin: 0; max-width: 34em; }
 .badge {
   display: inline-flex;
   align-items: center;
@@ -206,3 +192,127 @@ footer.site-footer {
 footer.site-footer a { color: var(--ink-2); text-decoration: none; }
 footer.site-footer a:hover { color: var(--ink); }
 footer.site-footer .spacer { flex: 1 1 auto; }
+
+/* Landing: one screen. The cards are the background, the words sit in
+   the dark above them, and the QR waits in the corner for a laptop
+   visitor to point a phone at. Always dark, whatever the system says. */
+body.landing {
+  --ground: #09090B;
+  --surface: rgba(30, 30, 35, 0.62);
+  --ink: #F5F5F7;
+  --ink-2: rgba(245, 245, 247, 0.72);
+  --ink-3: rgba(245, 245, 247, 0.46);
+  --hairline: rgba(245, 245, 247, 0.14);
+  --accent: #FFD60A;
+  color-scheme: dark;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow-x: hidden;
+}
+.backdrop { position: fixed; inset: 0; z-index: -1; }
+.backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  animation: rise 1.4s cubic-bezier(.2, .7, .2, 1) both;
+}
+/* Top scrim keeps the headline legible wherever the crop lands. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(9, 9, 11, 0.85) 0%, rgba(9, 9, 11, 0.35) 38%, rgba(9, 9, 11, 0) 55%, rgba(9, 9, 11, 0) 82%, rgba(9, 9, 11, 0.7) 100%);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(3%) scale(1.02); } }
+
+.landing-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: max(24px, env(safe-area-inset-top)) clamp(20px, 4vw, 48px) 0;
+}
+.landing-bar .logo { width: clamp(104px, 9vw, 132px); }
+
+.hero {
+  align-self: start;
+  justify-self: center;
+  text-align: center;
+  max-width: 920px;
+  padding: clamp(28px, 7vh, 88px) 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: fade-up 0.9s 0.15s cubic-bezier(.2, .7, .2, 1) both;
+}
+.hero .badge { align-self: center; background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.hero h1 {
+  font-size: clamp(28px, 7.6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+.hero p {
+  margin: 0;
+  max-width: 34em;
+  font-size: clamp(16px, 1.45vw, 20px);
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.hero .get { display: none; margin-top: 6px; }
+@keyframes fade-up { from { opacity: 0; transform: translateY(14px); } }
+
+.qr {
+  position: fixed;
+  right: clamp(20px, 3vw, 40px);
+  bottom: clamp(20px, 3vw, 40px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  animation: fade-up 0.9s 0.5s cubic-bezier(.2, .7, .2, 1) both;
+}
+.qr-tile {
+  display: block;
+  width: 112px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #F5F5F7;
+  color: #09090B;
+}
+.qr-code { display: block; width: 100%; height: auto; }
+.qr p { margin: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.35; color: var(--ink-3); }
+.qr strong { font-size: 15px; color: var(--ink); }
+
+.landing-foot {
+  display: flex;
+  gap: 8px 22px;
+  flex-wrap: wrap;
+  padding: 0 clamp(20px, 4vw, 48px) max(24px, env(safe-area-inset-bottom));
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.landing-foot a { color: var(--ink-3); text-decoration: none; }
+.landing-foot a:hover { color: var(--ink); }
+
+/* Phones and touch screens: a QR on the screen you'd scan it with is no
+   use, so it becomes a button. */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .qr { display: none; }
+  .hero .get { display: inline-flex; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop img, .hero, .qr { animation: none; }
+}
