@@ -315,6 +315,8 @@ body.landing::before {
   color: rgba(255, 255, 255, 0.55);
 }
 .hero .get { display: none; }
+/* Phones only: the links live here instead of in the top bar. */
+.landing-foot { display: none; }
 
 .qr {
   position: fixed;
@@ -391,10 +393,43 @@ body.landing::before {
    yellow button takes its place. */
 @media (max-width: 760px), (hover: none) and (pointer: coarse) {
   .qr { display: none; }
+  /* The first screen is the photo and the words alone; Support and
+     Privacy sit in a footer just below it, a short scroll away. */
+  .landing-bar nav { display: none; }
+  .landing-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px var(--gutter) max(26px, env(safe-area-inset-bottom));
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-family: var(--expanded);
+    font-stretch: 125%;
+    font-weight: 500;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .landing-foot nav { display: flex; gap: 22px; }
+  .landing-foot a { color: #fff; text-decoration: none; }
+  .landing-foot a:hover { color: #fff; }
   /* Portrait crops to the second runner: her side of the frame keeps
      clear sky behind the wordmark and open road under the words. */
   .backdrop { object-position: 74% 100%; }
-  .hero { right: var(--gutter); max-width: none; }
+  .hero {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    right: auto;
+    max-width: none;
+    min-height: 100vh;
+    min-height: 100svh;
+    box-sizing: border-box;
+    justify-content: flex-end;
+    padding: 0 var(--gutter) var(--gutter);
+  }
   .hero .get {
     display: inline-flex;
     align-items: center;
