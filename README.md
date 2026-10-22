@@ -5,7 +5,7 @@ into shareable cards. Plain static HTML and CSS, no build step.
 
 | Path | Page |
 |---|---|
-| `/` | Landing page: one screen, wordmark, headline, QR to the app |
+| `/` | Landing page: photograph, animated route, headline, QR to the app |
 | `/get` | Redirect (in `vercel.json`) to the TestFlight public link; point it at the App Store listing at launch, and every printed QR follows |
 | `/privacy/` | Privacy policy — App Store Connect › App Privacy › Privacy Policy URL |
 | `/support/` | Support and FAQ — App Store Connect › Support URL |
@@ -50,13 +50,19 @@ Delete GoDaddy's own `A` records for `@` (the parking IPs `13.248.243.5` and
 `npx vercel@65.1.0 domains verify anddone.club` reports when it's live, and
 Vercel issues the certificate on its own.
 
-## The landing background
+## The landing page
 
-`assets/hero-wide.jpg` (2880×1800) and `assets/hero-tall.jpg` (1290×2796) are
-composed from real exports of the app's own templates (Neon Pulse, Border
-Beam, Border Fire, and the Race Bib and Medal stickers) rendered from the app's
-fixture workouts, so no photo licences are involved. `assets/og.jpg` is a crop
-of the wide one. `assets/qr.svg` encodes `https://anddone.club/get`.
+- `assets/runners.jpg` (2000 px) and `runners-1200.jpg`: the black-and-white
+  photograph, supplied by Ritwik. Portrait screens crop to the second runner.
+- `assets/route.js`: the isometric route above the headline, in WebGL, ported
+  from the app's `RenderEngine/RouteShaders.metal` (route line, ground
+  shadow, Tracer curtain). Reduced motion gets the finished route, still.
+- `assets/qr.svg` / `assets/qr.js`: the QR (encodes `https://anddone.club/get`)
+  with its embossed dots, and the hover that lifts it toward the cursor.
+  Regenerate the SVG if the URL ever changes, and check it still scans.
+- `assets/fonts/archivo-latin.woff2`: Archivo (OFL), used at 125% width only
+  where SF Pro Expanded isn't installed.
+- `assets/og.jpg`: link-preview crop of the photograph.
 
 ## App Store Connect URLs
 
