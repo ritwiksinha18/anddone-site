@@ -2,13 +2,37 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "trailingSlash": true,
   "redirects": [
-    { "source": "/get", "destination": "https://testflight.apple.com/join/pJcWyPD7", "permanent": false },
-    { "source": "/get/", "destination": "https://testflight.apple.com/join/pJcWyPD7", "permanent": false }
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.anddone.club"
+        }
+      ],
+      "destination": "https://anddone.club/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/get",
+      "destination": "https://testflight.apple.com/join/pJcWyPD7",
+      "permanent": false
+    },
+    {
+      "source": "/get/",
+      "destination": "https://testflight.apple.com/join/pJcWyPD7",
+      "permanent": false
+    }
   ],
   "headers": [
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
     }
   ]
 }
