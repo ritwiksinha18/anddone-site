@@ -36,13 +36,19 @@ npx vercel@65.1.0 deploy --prod
 
 ### Domain
 
-`anddone.club` and `www.anddone.club` are added to the project. At the
-registrar, set:
+`anddone.club` and `www.anddone.club` are added to the project. DNS stays at
+GoDaddy (the registrar). In GoDaddy › Domains › anddone.club › DNS:
 
-- `A` record for `anddone.club` → `76.76.21.21`
-- `CNAME` for `www` → `cname.vercel-dns.com`
+| Type | Name | Value |
+|---|---|---|
+| `A` | `@` | `216.198.79.1` |
+| `A` | `@` | `64.29.17.1` |
+| `CNAME` | `www` | `3af6b98d0581a583.vercel-dns-017.com` |
 
-Vercel issues the certificate once DNS resolves.
+Delete GoDaddy's own `A` records for `@` (the parking IPs `13.248.243.5` and
+`76.223.105.230`) and the existing `www` CNAME first. Then
+`npx vercel@65.1.0 domains verify anddone.club` reports when it's live, and
+Vercel issues the certificate on its own.
 
 ## The landing background
 
