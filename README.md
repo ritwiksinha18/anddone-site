@@ -28,8 +28,15 @@ the Vercel CLI straight from this folder. There is no GitHub repository and no
 Git integration: nothing deploys unless someone runs the command.
 
 ```sh
+python3 scripts/stamp.py
 npx vercel@65.1.0 deploy --prod
 ```
+
+`scripts/stamp.py` adds a content hash to every CSS/JS link (`site.css?v=…`).
+Run it before each deploy, or browsers can pair a new page with an old
+cached stylesheet. CSS/JS are also served revalidate-always; images and the
+font cache for a day. `README.md` and `scripts/` are kept out of the upload
+by `.vercelignore`.
 
 `vercel.json` holds the `/get` redirect, trailing-slash URLs and asset caching.
 `.vercel/` (the project link) is git-ignored.
