@@ -24,8 +24,13 @@ then open http://localhost:4173.
 ## Hosting: Vercel, deployed from this folder
 
 The site is a Vercel project (`anddone-site`, personal account) deployed with
-the Vercel CLI straight from this folder. There is no GitHub repository and no
-Git integration: nothing deploys unless someone runs the command.
+the Vercel CLI straight from this folder. The code lives in the private repo
+`ritwiksinha18/anddone-site` on GitHub, but the repo is not connected to
+Vercel: pushing or merging changes nothing on anddone.club. A deploy happens
+only when someone with access to the Vercel project runs the command below.
+
+To experiment, branch and push freely, and preview locally with
+`python3 -m http.server 4173` (see above).
 
 ```sh
 python3 scripts/stamp.py
