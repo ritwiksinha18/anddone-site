@@ -1,0 +1,30 @@
+/* Shared base for the lab variants: the site's light ground, its type, and
+   a small switcher bar so the four can be compared side by side. */
+.lab-bar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  padding: 10px var(--gutter);
+  background: rgba(245, 245, 247, 0.86);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-family: var(--expanded); font-stretch: 125%; font-weight: 500;
+  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.lab-bar span { color: #86868b; margin-right: 8px; }
+.lab-bar a { padding: 7px 12px; border-radius: 999px; color: #1d1d1f; text-decoration: none; }
+.lab-bar a[aria-current="page"] { background: #1d1d1f; color: #fff; }
+body.landing.lab { background: #F5F5F7; color: #1d1d1f; color-scheme: light; }
+.lab-section { padding: clamp(96px, 16vh, 200px) 0; overflow: hidden; }
+.lab-head { text-align: center; padding: 0 var(--gutter); max-width: 860px; margin: 0 auto; }
+.lab-head h2 {
+  margin: 0; font-family: var(--expanded); font-stretch: 125%; font-weight: 700;
+  font-size: clamp(32px, 5vw, 72px); line-height: 0.98; letter-spacing: -0.015em;
+  text-transform: uppercase; text-wrap: balance;
+}
+.lab-head p {
+  margin: 22px auto 0; max-width: 32em; font-family: var(--sans);
+  font-size: clamp(16px, 1.3vw, 19px); line-height: 1.5; color: #6e6e73; text-wrap: balance;
+}
+.phone { display: block; width: 100%; height: auto; aspect-ratio: 578 / 1200; filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.16)); user-select: none; -webkit-user-drag: none; }
+.cap strong { color: #1d1d1f; font-weight: 600; }
+.cap { font-family: var(--sans); color: #6e6e73; line-height: 1.47; }

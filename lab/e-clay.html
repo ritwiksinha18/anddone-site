@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lab · Clay orbit</title>
+<link rel="stylesheet" href="/assets/site.css?v=b6a8c315">
+<link rel="stylesheet" href="/lab/lab.css">
+<script type="importmap">{ "imports": { "three": "/assets/vendor/three.module.min.js" } }</script>
+<style>
+.clay {
+  position: relative;
+  height: clamp(460px, 74vh, 760px);
+  margin-top: clamp(24px, 4vh, 56px);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.clay.dragging { cursor: grabbing; }
+@media (max-width: 760px) { .clay { height: 62vh; } }
+.clay canvas { display: block; width: 100%; height: 100%; }
+/* Without WebGL: the screens in a plain row. */
+.clay.flat { display: flex; gap: 16px; overflow-x: auto; padding: 0 var(--gutter); height: auto; cursor: auto; }
+.clay.flat .phone { width: 180px; flex: none; }
+.orbit-cap { margin: 0 auto; padding: 0 var(--gutter); max-width: 30em; min-height: 4.5em; text-align: center; font-size: clamp(15px, 1.15vw, 17px); transition: opacity .25s; }
+</style>
+</head>
+<body class="landing lab">
+<nav class="lab-bar"><span>And Done · showcase lab</span><a href="/lab/a-wave.html">1 Wave wall</a><a href="/lab/b-deck.html">2 Deck</a><a href="/lab/c-stage.html">3 Pinned stage</a><a href="/lab/d-orbit.html">4 Orbit</a><a href="/lab/e-clay.html" aria-current="page">5 Clay orbit</a></nav>
+
+<section class="lab-section">
+  <div class="lab-head">
+    <h2>Made on your iPhone.</h2>
+    <p>Fifteen designs, drawn from the workout you just finished. Drag to spin.</p>
+  </div>
+  <div class="clay" aria-label="And Done screens on clay phones, turning on a ring. Drag to spin."></div>
+  <p class="orbit-cap cap" aria-live="polite"></p>
+</section>
+
+<script src="/lab/screens.js"></script>
+<script>
+  // The clay phones show the bare screens, cut from the mockups.
+  window.SCREENS.forEach((s, i) => { s.flat = s.src; s.src = `/assets/screens/screen-flat-${String(i + 1).padStart(2, "0")}.webp`; });
+</script>
+<script type="module" src="/lab/clay.js"></script>
+</body>
+</html>

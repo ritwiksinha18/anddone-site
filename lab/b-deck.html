@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lab · Deck</title>
+<link rel="stylesheet" href="/assets/site.css?v=b6a8c315">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>
+/* The screens as a fanned deck. Every few seconds the front phone is dealt
+   off to the left and tucks in at the back; the list beside it keeps time
+   like a stories bar. Click the deck to deal, or a line to jump to it. */
+.deck-wrap {
+  --dur: 3.4s;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 96px);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.deck-copy h2 {
+  margin: 0; font-family: var(--expanded); font-stretch: 125%; font-weight: 700;
+  font-size: clamp(32px, 4.4vw, 64px); line-height: 0.98; letter-spacing: -0.015em; text-transform: uppercase;
+}
+.deck-list { list-style: none; margin: clamp(32px, 5vh, 48px) 0 0; padding: 0; counter-reset: n; }
+.deck-list li { counter-increment: n; }
+.deck-list button {
+  all: unset; box-sizing: border-box; cursor: pointer; display: block; width: 100%;
+  padding: 13px 0 12px; border-top: 1px solid rgba(0,0,0,.08);
+  font-family: var(--sans); font-size: clamp(15px, 1.2vw, 17px); color: #86868b;
+  transition: color .3s;
+}
+.deck-list button::before {
+  content: counter(n, decimal-leading-zero); display: inline-block; width: 3em;
+  font-family: var(--expanded); font-stretch: 125%; font-size: 10.5px; letter-spacing: .12em; color: #b0b0b5;
+}
+.deck-list li.on button { color: #1d1d1f; }
+.deck-list .body { display: block; max-height: 0; overflow: hidden; padding-left: 3em; color: #6e6e73; font-size: .92em; line-height: 1.45; transition: max-height .5s, margin .5s; }
+.deck-list li.on .body { max-height: 5em; margin-top: 6px; }
+.deck-list .bar { display: block; height: 2px; margin-top: 10px; background: rgba(0,0,0,.08); border-radius: 2px; overflow: hidden; visibility: hidden; }
+.deck-list li.on .bar { visibility: visible; }
+.deck-list li.on .bar i { display: block; height: 100%; background: #1d1d1f; transform-origin: left; animation: fill var(--dur) linear both; }
+.deck-wrap.paused .deck-list li.on .bar i { animation-play-state: paused; }
+@keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.deck { position: relative; height: min(74vh, 660px); cursor: pointer; }
+.card {
+  position: absolute; left: 50%; top: 50%;
+  width: calc(min(74vh, 660px) * 0.4817); margin-left: calc(min(74vh, 660px) * -0.2408);
+  height: min(74vh, 660px); margin-top: calc(min(74vh, 660px) * -0.5);
+  transition: transform .8s cubic-bezier(.2,.75,.2,1), opacity .6s, filter .8s;
+  transform-origin: 50% 90%;
+}
+.card .phone { height: 100%; width: auto; }
+@media (max-width: 860px) {
+  .deck-wrap { grid-template-columns: 1fr; }
+  .deck { height: 62vh; order: -1; }
+  .card { width: calc(62vh * 0.4817); margin-left: calc(62vh * -0.2408); height: 62vh; margin-top: -31vh; }
+}
+@media (prefers-reduced-motion: reduce) { .card { transition: opacity .3s; } }
+</style>
+</head>
+<body class="landing lab">
+<nav class="lab-bar"><span>And Done · showcase lab</span><a href="/lab/a-wave.html">1 Wave wall</a><a href="/lab/b-deck.html" aria-current="page">2 Deck</a><a href="/lab/c-stage.html">3 Pinned stage</a><a href="/lab/d-orbit.html">4 Orbit</a><a href="/lab/e-clay.html">5 Clay orbit</a></nav>
+
+<section class="lab-section">
+  <div class="deck-wrap">
+    <div class="deck-copy">
+      <h2>Made on your iPhone.</h2>
+      <ol class="deck-list"></ol>
+    </div>
+    <div class="deck" aria-label="And Done screens. Click to show the next."></div>
+  </div>
+</section>
+
+<script src="/lab/screens.js"></script>
+<script>
+(function () {
+  const S = window.SCREENS, n = S.length;
+  const wrap = document.querySelector(".deck-wrap");
+  const deck = document.querySelector(".deck");
+  const list = document.querySelector(".deck-list");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const DUR = 3400;
+
+  const cards = S.map((s) => {
+    const c = document.createElement("div");
+    c.className = "card";
+    c.innerHTML = `<img class="phone" src="${s.src}" alt="${s.alt}" decoding="async">`;
+    deck.appendChild(c);
+    return c;
+  });
+  const items = S.map((s, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<button type="button"><strong>${s.lead}</strong><span class="body">${s.body}</span><span class="bar"><i></i></span></button>`;
+    li.querySelector("button").addEventListener("click", () => go(i));
+    list.appendChild(li);
+    return li;
+  });
+
+  let active = 0, prev = -1, timer = 0;
+  // Where each card sits, by its place behind the front one.
+  function place(k, leaving) {
+    if (leaving) return { t: "translate(-128%, 8%) rotate(-16deg) scale(.9)", o: 0, z: 20, f: "none" };
+    if (k === 0) return { t: "none", o: 1, z: 10, f: "none" };
+    if (k <= 3) return { t: `translate(${k * 13}%, ${-k * 1.5}%) rotate(${k * 6}deg) scale(${1 - k * .05})`, o: 1, z: 10 - k, f: `brightness(${1 - k * .06})` };
+    return { t: "translate(42%, -5%) rotate(20deg) scale(.82)", o: 0, z: 0, f: "none" };
+  }
+  function layout() {
+    cards.forEach((c, i) => {
+      const k = (i - active + n) % n;
+      const p = place(k, i === prev);
+      c.style.transform = p.t; c.style.opacity = p.o; c.style.zIndex = p.z; c.style.filter = p.f;
+    });
+    items.forEach((li, i) => li.classList.toggle("on", i === active));
+  }
+  // The bar restarts whenever the timer does, so the two always agree.
+  function restartBar() {
+    const bar = items[active].querySelector(".bar i");
+    bar.style.animation = "none"; void bar.offsetWidth; bar.style.animation = "";
+  }
+  function go(i) {
+    prev = active; active = (i + n) % n;
+    layout();
+    // The dealt card drops to the back once it has left the screen.
+    setTimeout(() => { prev = -1; layout(); }, 650);
+    restartBar();
+    schedule();
+  }
+  function schedule() {
+    clearTimeout(timer);
+    if (!reduce && !wrap.classList.contains("paused")) timer = setTimeout(() => go(active + 1), DUR);
+  }
+  deck.addEventListener("click", () => go(active + 1));
+  wrap.addEventListener("mouseenter", () => { wrap.classList.add("paused"); clearTimeout(timer); });
+  wrap.addEventListener("mouseleave", () => { wrap.classList.remove("paused"); restartBar(); schedule(); });
+  layout(); restartBar(); schedule();
+})();
+</script>
+</body>
+</html>

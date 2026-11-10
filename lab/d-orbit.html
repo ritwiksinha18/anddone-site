@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lab · Orbit</title>
+<link rel="stylesheet" href="/assets/site.css?v=b6a8c315">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>
+/* The nine phones stood on a slowly turning ring, seen from a little above.
+   Drag to spin it, with a flick carrying on; let go and it settles back to
+   its own pace. Phones toward the back dim, and the caption is always the
+   one facing you. */
+.orbit {
+  --w: clamp(132px, 15vw, 230px);
+  position: relative;
+  height: calc(var(--w) * 2.08 + 120px);
+  margin-top: clamp(48px, 8vh, 96px);
+  perspective: 1500px;
+  perspective-origin: 50% 30%;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.orbit.dragging { cursor: grabbing; }
+.ring { position: absolute; left: 50%; top: 40px; width: var(--w); margin-left: calc(var(--w) / -2); transform-style: preserve-3d; }
+.slot { position: absolute; left: 0; top: 0; width: var(--w); transform-style: preserve-3d; }
+.slot .phone { filter: none; }
+.floor {
+  position: absolute; left: 50%; bottom: 10px; width: min(70vw, 900px); height: 80px; transform: translateX(-50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.12), transparent 70%);
+}
+.orbit-cap { margin: clamp(24px, 4vh, 40px) auto 0; padding: 0 var(--gutter); max-width: 30em; min-height: 4.5em; text-align: center; font-size: clamp(15px, 1.15vw, 17px); transition: opacity .25s; }
+</style>
+</head>
+<body class="landing lab">
+<nav class="lab-bar"><span>And Done · showcase lab</span><a href="/lab/a-wave.html">1 Wave wall</a><a href="/lab/b-deck.html">2 Deck</a><a href="/lab/c-stage.html">3 Pinned stage</a><a href="/lab/d-orbit.html" aria-current="page">4 Orbit</a><a href="/lab/e-clay.html">5 Clay orbit</a></nav>
+
+<section class="lab-section">
+  <div class="lab-head">
+    <h2>Made on your iPhone.</h2>
+    <p>Fifteen designs, drawn from the workout you just finished. Drag to spin.</p>
+  </div>
+  <div class="orbit" aria-label="And Done screens on a turning ring. Drag to spin.">
+    <div class="floor"></div>
+    <div class="ring"></div>
+  </div>
+  <p class="orbit-cap cap" aria-live="polite"></p>
+</section>
+
+<script src="/lab/screens.js"></script>
+<script>
+(function () {
+  const S = window.SCREENS, n = S.length, STEP = 360 / n;
+  const orbit = document.querySelector(".orbit"), ring = document.querySelector(".ring"), cap = document.querySelector(".orbit-cap");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const slots = S.map((s) => {
+    const d = document.createElement("div");
+    d.className = "slot";
+    d.innerHTML = `<img class="phone" src="${s.src}" alt="${s.alt}" decoding="async" draggable="false">`;
+    ring.appendChild(d); return d;
+  });
+
+  let angle = 0, vel = reduce ? 0 : -9, front = -1, dragging = false, lastX = 0, lastT = 0;
+  const CRUISE = reduce ? 0 : -9;  // degrees per second
+
+  function radius() {
+    const w = ring.getBoundingClientRect().width;
+    return (w / 2) / Math.tan(Math.PI / n) * 1.32;
+  }
+  let R = radius();
+  addEventListener("resize", () => { R = radius(); });
+
+  function render() {
+    ring.style.transform = `translateZ(${-R}px) rotateX(-6deg) rotateY(${angle}deg)`;
+    let best = 0, bestCos = -2;
+    slots.forEach((el, i) => {
+      const a = i * STEP;
+      const c = Math.cos(((a + angle) * Math.PI) / 180);  // 1 facing us, -1 behind
+      el.style.transform = `rotateY(${a}deg) translateZ(${R}px)`;
+      el.style.filter = `brightness(${(0.55 + 0.45 * (c + 1) / 2).toFixed(3)}) blur(${Math.max(0, -c * 1.4).toFixed(2)}px)`;
+      if (c > bestCos) { bestCos = c; best = i; }
+    });
+    if (best !== front) {
+      front = best;
+      cap.style.opacity = 0;
+      setTimeout(() => { cap.innerHTML = `<strong>${S[front].lead}</strong> ${S[front].body}`; cap.style.opacity = 1; }, 180);
+    }
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    if (!dragging) {
+      vel += (CRUISE - vel) * Math.min(1, dt * 1.6);  // a flick eases back to cruising
+      angle += vel * dt;
+    }
+    render();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  orbit.addEventListener("pointerdown", (e) => {
+    dragging = true; orbit.classList.add("dragging");
+    lastX = e.clientX; lastT = performance.now(); orbit.setPointerCapture(e.pointerId);
+  });
+  orbit.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const now = performance.now(), dx = e.clientX - lastX;
+    angle += dx * 0.25;
+    vel = (dx * 0.25) / Math.max((now - lastT) / 1000, 0.008);
+    lastX = e.clientX; lastT = now;
+  });
+  const end = () => { dragging = false; orbit.classList.remove("dragging"); vel = Math.max(-240, Math.min(240, vel)); };
+  orbit.addEventListener("pointerup", end);
+  orbit.addEventListener("pointercancel", end);
+})();
+</script>
+</body>
+</html>

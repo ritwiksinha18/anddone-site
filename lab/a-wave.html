@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lab · Wave wall</title>
+<link rel="stylesheet" href="/assets/site.css?v=b6a8c315">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>
+/* A wall of phones in the manner of Cowboy's rider grid: rows that run off
+   both edges and drift in opposite directions, with a slow wave travelling
+   through them. The wave is keyed to each phone's position on screen, not
+   its place in the row, so it reads as one swell moving across the wall. */
+.wall {
+  --w: clamp(118px, 12.5vw, 206px);
+  --gap: clamp(14px, 1.6vw, 26px);
+  margin-top: clamp(64px, 10vh, 120px);
+  display: grid;
+  gap: calc(var(--gap) * 1.6);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.row { display: flex; gap: var(--gap); width: max-content; will-change: transform; }
+.tile { width: var(--w); flex: none; will-change: transform; }
+.wall-caption {
+  margin: clamp(40px, 6vh, 64px) auto 0;
+  padding: 0 var(--gutter);
+  text-align: center;
+  max-width: 30em;
+  min-height: 3em;
+  font-size: clamp(15px, 1.15vw, 17px);
+  transition: opacity .3s;
+}
+</style>
+</head>
+<body class="landing lab">
+<nav class="lab-bar"><span>And Done · showcase lab</span><a href="/lab/a-wave.html" aria-current="page">1 Wave wall</a><a href="/lab/b-deck.html">2 Deck</a><a href="/lab/c-stage.html">3 Pinned stage</a><a href="/lab/d-orbit.html">4 Orbit</a><a href="/lab/e-clay.html">5 Clay orbit</a></nav>
+
+<section class="lab-section">
+  <div class="lab-head">
+    <h2>Made on your iPhone.</h2>
+    <p>Fifteen designs, one tap away. Every one of them drawn from the workout you just finished.</p>
+  </div>
+  <div class="wall" aria-label="And Done screens"></div>
+  <p class="wall-caption cap" aria-live="polite">Hover a screen to see what it does.</p>
+</section>
+
+<script src="/lab/screens.js"></script>
+<script>
+(function () {
+  const S = window.SCREENS;
+  const wall = document.querySelector(".wall");
+  const caption = document.querySelector(".wall-caption");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ROWS = 2, SPEED = [-16, 16];  // px per second, opposite directions
+
+  // Each row holds the nine screens twice (starting at a different screen
+  // per row), so it can loop seamlessly.
+  const rows = [];
+  for (let r = 0; r < ROWS; r++) {
+    const row = document.createElement("div");
+    row.className = "row";
+    const order = S.map((_, i) => S[(i + r * 4) % S.length]);
+    for (const s of [...order, ...order]) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.innerHTML = `<img class="phone" src="${s.src}" alt="${s.alt}" loading="lazy" decoding="async">`;
+      tile.addEventListener("mouseenter", () => { caption.innerHTML = `<strong>${s.lead}</strong> ${s.body}`; });
+      row.appendChild(tile);
+    }
+    wall.appendChild(row);
+    rows.push({ row, tiles: [...row.children], x: r ? -200 : 0, speed: SPEED[r] });
+  }
+
+  let paused = false, last = performance.now(), t = 0;
+  wall.addEventListener("mouseenter", () => { paused = true; });
+  wall.addEventListener("mouseleave", () => { paused = false; caption.textContent = "Hover a screen to see what it does."; });
+
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    if (!paused && !reduce) t += dt;
+    for (const R of rows) {
+      const half = R.row.scrollWidth / 2;
+      if (!paused && !reduce) R.x += R.speed * dt;
+      R.x = ((R.x % half) - half) % half;  // keep within one copy's width
+      R.row.style.transform = `translate3d(${R.x}px,0,0)`;
+      // The swell: each phone rises and falls with its x on screen.
+      for (const tile of R.tiles) {
+        const sx = tile.offsetLeft + R.x;
+        const y = Math.sin(t * 1.1 - sx / 260) * 22;
+        tile.style.transform = `translate3d(0,${y.toFixed(2)}px,0)`;
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

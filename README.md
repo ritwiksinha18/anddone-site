@@ -75,6 +75,14 @@ domain in the Vercel project (Settings › Domains), not in `vercel.json`.
 - `assets/qr.svg` / `assets/qr.js`: the QR (encodes `https://anddone.club/get`)
   with its embossed dots, and the hover that lifts it toward the cursor.
   Regenerate the SVG if the URL ever changes, and check it still scans.
+- `assets/showcase.js` / `assets/clay.js`: the "Fifteen ways to tell it"
+  section: nine clay phones on a turning ring, rendered with Three.js
+  (`assets/vendor/`, MIT, pinned to 0.160.0 and self-hosted). The 3D loads
+  only as the section approaches. Screens are `assets/screens/screen-flat-*`,
+  cut from the App Store mockups. Without WebGL it falls back to a plain row.
+- `lab/`: design experiments for the screenshot section (wave wall, deck,
+  pinned stage, flat orbit, clay orbit). Preview locally at `/lab/…`; it is
+  excluded from deploys by `.vercelignore`.
 - `assets/fonts/archivo-latin.woff2`: Archivo (OFL), used at 125% width only
   where SF Pro Expanded isn't installed.
 - `assets/og.jpg`: link-preview crop of the photograph.
