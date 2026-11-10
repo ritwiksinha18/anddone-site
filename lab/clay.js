@@ -184,7 +184,7 @@ resize();
 // ---------- Motion ----------
 
 const CRUISE = reduce ? 0 : -0.16;  // radians per second
-let angle = 0, vel = CRUISE, front = -1, dragging = false, lastX = 0, lastT = 0, t = 0;
+let angle = 0, vel = CRUISE, front = -1, dragging = false, lastX = 0, lastT = 0;
 
 function setCaption(i) {
   cap.style.opacity = 0;
@@ -199,19 +199,11 @@ function frame(now) {
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
   if (!visible) return;
-  t += dt;
   if (!dragging) {
     vel += (CRUISE - vel) * Math.min(1, dt * 1.4);
     angle += vel * dt;
   }
   ring.rotation.y = angle;
-  // A slow float, out of step from phone to phone.
-  phones.forEach((p, i) => {
-    p.position.y = reduce ? 0 : Math.sin(t * 0.9 + i * 0.7) * 0.06;
-    // As a phone floats up its shadow spreads and fades a little.
-    p.userData.blob.material.opacity = 0.32 - p.position.y * 0.8;
-    p.rotation.x = reduce ? 0 : Math.sin(t * 0.7 + i) * 0.03;
-  });
   // The phone facing the camera: its angle on the ring closest to zero.
   let best = 0, bestCos = -2;
   phones.forEach((p, i) => {
