@@ -1,4 +1,4 @@
-// The "Fifteen ways to tell it" section: the screens and their copy, and a
+// The "A look for every finish" section: the screens and their copy, and a
 // loader that brings in the 3D (Three.js and clay.js, ~180 KB compressed)
 // only when the section is about to come on screen.
 const SCREENS = [

@@ -544,7 +544,7 @@ body.landing {
 .rail-btn:focus-visible { outline: 2px solid #1d1d1f; outline-offset: 3px; }
 .rail-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* "Fifteen ways to tell it": the screens on clay phones, turning on a ring
+/* "A look for every finish": the screens on clay phones, turning on a ring
    (showcase.js, clay.js). It follows the highlights on the same ground, so
    their bottom padding is the gap between the two. The caption sits right
    under the heading and changes with the phone facing you. */

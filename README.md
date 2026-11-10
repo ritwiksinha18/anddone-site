@@ -75,7 +75,7 @@ domain in the Vercel project (Settings › Domains), not in `vercel.json`.
 - `assets/qr.svg` / `assets/qr.js`: the QR (encodes `https://anddone.club/get`)
   with its embossed dots, and the hover that lifts it toward the cursor.
   Regenerate the SVG if the URL ever changes, and check it still scans.
-- `assets/showcase.js` / `assets/clay.js`: the "Fifteen ways to tell it"
+- `assets/showcase.js` / `assets/clay.js`: the "A look for every finish"
   section: nine clay phones on a turning ring, rendered with Three.js
   (`assets/vendor/`, MIT, pinned to 0.160.0 and self-hosted). The 3D loads
   only as the section approaches. Screens are `assets/screens/screen-flat-*`,
