@@ -6,7 +6,7 @@ into shareable cards. Plain static HTML and CSS, no build step.
 | Path | Page |
 |---|---|
 | `/` | Landing page: photograph, animated route, headline, QR to the app |
-| `/get` | Redirect (in `vercel.json`) to the TestFlight public link; point it at the App Store listing at launch, and every printed QR follows |
+| `/get` | Redirect (in `vercel.json`) to the App Store listing (`apps.apple.com/app/and-done-club/id6797864835`). The QR and the yellow button both use `/get`, so changing the destination here moves every printed QR with it |
 | `/privacy/` | Privacy policy — App Store Connect › App Privacy › Privacy Policy URL |
 | `/support/` | Support and FAQ — App Store Connect › Support URL |
 

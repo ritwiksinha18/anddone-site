@@ -4,12 +4,12 @@
   "redirects": [
     {
       "source": "/get",
-      "destination": "https://testflight.apple.com/join/pJcWyPD7",
+      "destination": "https://apps.apple.com/app/and-done-club/id6797864835",
       "permanent": false
     },
     {
       "source": "/get/",
-      "destination": "https://testflight.apple.com/join/pJcWyPD7",
+      "destination": "https://apps.apple.com/app/and-done-club/id6797864835",
       "permanent": false
     }
   ],
