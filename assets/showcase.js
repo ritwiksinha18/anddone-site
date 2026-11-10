@@ -1,6 +1,7 @@
 // The "A look for every finish" section: the screens and their copy, and a
 // loader that brings in the 3D (Three.js and clay.js, ~180 KB compressed)
-// only when the section is about to come on screen.
+// once the first screen has finished loading, or sooner if the section is
+// already near, so it's ready before anyone scrolls down to it.
 const SCREENS = [
   { lead: "Every workout, ready.", body: "Runs, rides, walks and lifts arrive from Apple Health, grouped by week, each with the shape of its route.", alt: "A list of workouts grouped by week, each with its type, date and stats." },
   { lead: "Your route, on the map.", body: "The line traced over the streets and water you actually passed, with your time, pace and heart rate beneath it.", alt: "A run's route drawn in white over a dark street map." },
@@ -16,11 +17,19 @@ const SCREENS = [
 const mount = document.querySelector(".clay");
 const cap = document.querySelector(".showcase-cap");
 if (mount && cap) {
-  const go = () => import("/assets/clay.js").then((m) => m.start(mount, cap, SCREENS));
+  let started = false;
+  const go = () => {
+    if (started) return;
+    started = true;
+    import("/assets/clay.js").then((m) => m.start(mount, cap, SCREENS));
+  };
+  // Idle time after the page has loaded: the hero is painted by then.
+  const whenIdle = () => ("requestIdleCallback" in window ? requestIdleCallback(go, { timeout: 2500 }) : setTimeout(go, 800));
+  if (document.readyState === "complete") whenIdle();
+  else addEventListener("load", whenIdle, { once: true });
+  // A visitor who lands lower on the page (or scrolls fast) starts it at once.
   if ("IntersectionObserver" in window) {
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "600px 0px" });
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "800px 0px" });
     io.observe(mount);
-  } else {
-    go();
   }
 }
